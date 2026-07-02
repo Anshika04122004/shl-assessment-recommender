@@ -141,7 +141,7 @@ def root() -> str:
   <header>
     <div>
       <h1>SHL Assessment Recommender</h1>
-      <div class="status">Local API: <code>/health</code> ready, <code>/chat</code> active</div>
+      <div class="status">API: <code>/health</code> ready, <code>/chat</code> active</div>
     </div>
     <nav class="links">
       <a href="/docs">Swagger Docs</a>
