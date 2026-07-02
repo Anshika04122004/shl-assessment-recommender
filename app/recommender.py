@@ -126,6 +126,20 @@ def is_prompt_injection(text: str) -> bool:
 
 def is_legal_or_compliance(text: str) -> bool:
     norm = normalize_text(text)
+    strong_legal = (
+        "legally defensible",
+        "legally required",
+        "is it legal",
+        "legal risk",
+        "legal advice",
+        "adverse impact",
+        "discriminat",
+        "protected class",
+        "lawsuit",
+        "comply with the law",
+    )
+    if any(term in norm for term in strong_legal):
+        return True
     legal_terms = ("legally", "legal", "law", "lawful", "regulatory", "required under", "satisfy that requirement")
     compliance_terms = ("hipaa", "gdpr", "eeoc", "compliance")
     return any(term in norm for term in legal_terms) and any(term in norm for term in compliance_terms)
@@ -167,8 +181,15 @@ def is_compare(text: str) -> bool:
             "difference between",
             "compare",
             " vs ",
+            " vs.",
             " versus ",
             "different from",
+            "differ",
+            "how do they differ",
+            "compared to",
+            "trade off",
+            "trade-off",
+            "which is better",
             "do we really need",
         )
     )
@@ -321,7 +342,7 @@ def initial_shortlist(state: State) -> list[Product]:
                 "MS Word (New)",
                 "Occupational Personality Questionnaire OPQ32r",
             ]
-    elif has_any(text, ("full stack", "full-stack", "java", "spring", "microservice", "backend")):
+    elif has_any(text, ("full stack", "full-stack", "java", "spring")):
         if has_any(text, ("backend leaning", "backend-leaning", "senior ic", "senior individual")) or ("backend" in norm and ("java" in norm or "spring" in norm)) or state.turn_count >= 5:
             names = [
                 "Core Java (Advanced Level) (New)",

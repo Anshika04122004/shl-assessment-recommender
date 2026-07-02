@@ -32,6 +32,24 @@ def tokenize(value: str) -> set[str]:
     return {token for token in normalize_text(value).split() if len(token) > 1}
 
 
+# Generic hiring/conversation words that add noise to lexical matching. They are
+# stripped from the *query* side only (never from product text) so that role and
+# skill terms drive retrieval instead of filler like "hiring" or "candidate".
+SEARCH_STOPWORDS = frozenset(
+    {
+        "a", "an", "and", "or", "the", "for", "to", "of", "in", "on", "with", "we",
+        "our", "i", "you", "they", "them", "is", "are", "be", "need", "needs",
+        "want", "looking", "look", "help", "please", "hire", "hiring", "hired",
+        "role", "roles", "job", "jobs", "position", "positions", "candidate",
+        "candidates", "assess", "assessment", "assessments", "test", "tests",
+        "testing", "screen", "screening", "evaluate", "evaluation", "team",
+        "teams", "staff", "people", "person", "someone", "new", "good", "great",
+        "quick", "quickly", "level", "experience", "years", "shl", "solution",
+        "solutions", "recommend", "recommendation", "add", "also", "some",
+    }
+)
+
+
 @dataclass(frozen=True)
 class Product:
     entity_id: str
@@ -122,7 +140,7 @@ class Catalog:
         return dedupe_products(found)
 
     def search(self, query: str, limit: int = 30) -> list[tuple[Product, float]]:
-        query_tokens = tokenize(query)
+        query_tokens = tokenize(query) - SEARCH_STOPWORDS
         if not query_tokens:
             return []
         scored: list[tuple[Product, float]] = []

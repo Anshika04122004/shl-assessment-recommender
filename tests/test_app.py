@@ -105,6 +105,27 @@ def test_comparison_returns_no_recommendations():
     assert "Dependability and Safety Instrument" in body["reply"]
 
 
+def test_comparison_differ_phrasing_returns_no_recommendations():
+    body = post_chat([{"role": "user", "content": "How do OPQ and Verify G+ differ?"}])
+    assert body["recommendations"] == []
+    assert "OPQ" in body["reply"] or "Occupational Personality" in body["reply"]
+
+
+def test_legal_defensibility_question_is_refused():
+    body = post_chat([{"role": "user", "content": "Is a cognitive test legally defensible for hiring?"}])
+    assert body["recommendations"] == []
+    assert "legal" in body["reply"].lower()
+
+
+def test_holdout_style_query_returns_relevant_catalog_items():
+    body = post_chat(
+        [{"role": "user", "content": "We are hiring a Python backend developer with SQL experience."}]
+    )
+    names = [rec["name"] for rec in body["recommendations"]]
+    assert names, "expected a non-empty shortlist for a novel technical role"
+    assert any("Python" in name or "SQL" in name for name in names)
+
+
 def test_confirmation_sets_end_true_and_repeats_shortlist():
     body = post_chat(
         [
