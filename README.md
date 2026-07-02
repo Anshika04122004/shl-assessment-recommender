@@ -21,6 +21,8 @@ Optional browser-friendly endpoints:
 - `GET <PUBLIC_BASE_URL>/`
 - `GET <PUBLIC_BASE_URL>/docs`
 
+The root endpoint `/` opens a simple local demo chat UI. The assignment evaluator still uses `/health` and `/chat`.
+
 ## Run Locally
 
 ```powershell
@@ -32,6 +34,12 @@ Health check:
 
 ```powershell
 Invoke-RestMethod http://127.0.0.1:8000/health
+```
+
+Browser demo:
+
+```text
+http://127.0.0.1:8000/
 ```
 
 Chat:
